@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENRE DETECTION</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .top-bar {
+            background-color: #ccc;
+            height: 10px;
+            width: 100%;
+        }
+
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .file-requirements {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .genre-text {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .additional-info {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar"></div>
+    <h1 class="center-text">GENRE DETECTION</h1>
+
+    <div class="additional-info">
+        <p>Musik merupakan bagian tak terpisahkan dari kehidupan manusia. Beragam genre musik menghibur dan menemani
+            berbagai momen dalam hidup. Namun, terkadang kita dihadapkan pada situasi di mana kita tidak mengetahui
+            genre musik yang sedang didengarkan. Hal ini bisa terjadi saat menemukan musik baru di platform streaming,
+            mendengar musik di tempat umum, atau bahkan saat lupa genre musik favorit kita sendiri.</p>
+        <p>Permasalahan ini dapat diatasi dengan kemajuan teknologi, khususnya dalam bidang kecerdasan buatan. Dengan
+            kemampuannya menganalisis data audio, model pembelajaran mesin dapat mengidentifikasi genre musik
+            berdasarkan potongan musik yang singkat. Hal ini memungkinkan kita untuk dengan mudah mengetahui genre musik
+            yang sedang didengarkan, mempermudah penemuan musik baru yang sesuai dengan selera, dan bahkan membantu
+            mengorganisir koleksi musik pribadi.</p>
+    </div>
+
+    <div class="container">
+        <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
+            <label for="fileInput">Upload a file:</label>
+            <input type="file" id="fileInput" name="file" accept=".wav,.mp3" required>
+            <div class="file-requirements">
+                Accepted file types: .wav, .mp3<br>
+                Max file size: 2MB
+            </div>
+            <button type="button" onclick="predictGenre(event)">Predict</button>
+            <div class="genre-text" id="genreText">
+                <!-- Genre musik anda adalah.... -->
+            </div>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function predictGenre() {
+            event.preventDefault(); 
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput').files[0];
+            formData.append('file', fileInput);
+
+            $.ajax({
+                url: '/predict',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#result').text('Genre musik Anda adalah: ' + response.prediction);
+                },
+                error: function(xhr, status, error) {
+                    $('#result').text('Error: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
